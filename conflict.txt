@@ -1,2 +1,1 @@
-Line 1: Base
-Line 2: Unchanged
+Line 1: Change from F2
