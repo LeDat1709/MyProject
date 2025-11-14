@@ -20,19 +20,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Thiết lập môi trường Node.js [cite: 199, 202]
+      # Thiết lập môi trường Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '18'
+          cache: 'npm'
 
-      # Cài đặt phụ thuộc [cite: 203, 204]
+      # Cài đặt phụ thuộc
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # Chạy kiểm thử
       - name: Run tests
-        run: npx jest
+        run: |
+          chmod +x node_modules/.bin/jest
+          npm test
 
       # Xây dựng ứng dụng [cite: 207, 208]
       - name: Build application
