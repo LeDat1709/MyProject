@@ -1,0 +1,23 @@
+{
+  "name": "myproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeDat1709/MyProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeDat1709/MyProject/issues"
+  },
+  "homepage": "https://github.com/LeDat1709/MyProject#readme",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
