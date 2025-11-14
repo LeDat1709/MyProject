@@ -1,38 +1,25 @@
-name: CI/CD Pipeline
+name: Project Build and Notify
 
-# Định nghĩa các sự kiện kích hoạt (trigger)
 on:
   push:
     branches:
-      - main        # 4 khoảng trắng ở đầu
-      - development # 4 khoảng trắng ở đầu
+      - main
   pull_request:
     branches:
       - main
 
-# Định nghĩa các công việc (Jobs)
 jobs:
-  build-and-test:
-    # 1. Định nghĩa chiến lược Matrix (strategy)
-    strategy:
-      matrix:
-        # 2. Định nghĩa biến và các giá trị của nó
-        node-version: ['18', '20'] # Các phiên bản Node.js được hỗ trợ (18+ cho Jest compatibility)
-
-    # Job sẽ chạy lặp lại cho mỗi giá trị trong matrix
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      # Tải mã nguồn [cite: 197, 198]
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # Bước 1: Checkout mã nguồn
+      - uses: actions/checkout@v4
 
-      # 3. Sử dụng giá trị từ matrix trong bước Setup Node.js
-      - name: Set up Node.js ${{ matrix.node-version }} # Tên hiển thị phiên bản
+      # Cài đặt Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          # Thay thế node-version: '18' cố định bằng biến matrix
-          node-version: ${{ matrix.node-version }}
+          node-version: '18'
           cache: 'npm'
 
       # Cài đặt phụ thuộc
@@ -41,43 +28,38 @@ jobs:
 
       # Chạy kiểm thử
       - name: Run tests
-        run: |
-          chmod +x node_modules/.bin/jest
-          npm test
+        run: npm test
 
-      # Xây dựng ứng dụng [cite: 207, 208]
+      # Xây dựng ứng dụng
       - name: Build application
         run: npm run build
 
-  notify:
-    # 1. Định nghĩa điều kiện phụ thuộc (Phải chạy sau khi build-and-test kết thúc)
-    needs: build-and-test
-
-    # 2. Định nghĩa điều kiện chạy (Luôn chạy, ngay cả khi Job trước thất bại, để thông báo lỗi)
-    if: always()
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Send email notification
+      # Bước cuối: Gửi email thông báo
+      - name: Send Mail Notification 📧
+        if: always() # Luôn chạy để thông báo kể cả khi build lỗi
         uses: dawidd6/action-send-mail@v3
         with:
-          # Cấu hình SMTP Server
+          # Cấu hình tài khoản gửi đi (Sử dụng Secrets đã thiết lập)
           server_address: smtp.gmail.com
           server_port: 465
-          secure: true
-
-          # Cấu hình Tài khoản (Lấy từ Secrets)
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
 
-          # Cấu hình Thông báo
-          subject: 'CI/CD Status: ${{ github.repository }} - ${{ job.status }}'
-          to: recipient@example.com # Email nhận thông báo của bạn
-          from: GitHub Actions
-          html_body: |
-            <h1>CI/CD Pipeline Status</h1>
-            <p><strong>Repository:</strong> ${{ github.repository }}</p>
-            <p><strong>Commit:</strong> ${{ github.sha }}</p>
-            <p><strong>Status:</strong> <strong>${{ job.status }}</strong></p>
-            <p>Check the build details here: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+          # Cấu hình email
+          subject: '[${{ github.repository }}] Build Status: ${{ job.status }}'
+
+          # ĐỊA CHỈ NGƯỜI NHẬN (Recipient)
+          to: letandatk16@siu.edu.vn
+
+          # Nội dung email
+          body: |
+            Hi team,
+
+            The build process for commit ${{ github.sha }} has finished with status: ${{ job.status }}.
+            Check the logs here: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Best,
+            GitHub Actions Bot
+
+          # Ai sẽ được hiển thị là người gửi
+          from: GitHub Actions Bot
