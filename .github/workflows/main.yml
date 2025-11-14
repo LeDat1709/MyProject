@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         # 2. Định nghĩa biến và các giá trị của nó
-        node-version: ['14', '16', '18'] # Các phiên bản Node.js sẽ chạy
+        node-version: ['16', '18', '20'] # Các phiên bản Node.js được hỗ trợ
 
     # Job sẽ chạy lặp lại cho mỗi giá trị trong matrix
     runs-on: ubuntu-latest
@@ -25,7 +25,7 @@ jobs:
     steps:
       # Tải mã nguồn [cite: 197, 198]
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 3. Sử dụng giá trị từ matrix trong bước Setup Node.js
       - name: Set up Node.js ${{ matrix.node-version }} # Tên hiển thị phiên bản
