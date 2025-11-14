@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         # 2. Định nghĩa biến và các giá trị của nó
-        node-version: ['16', '18', '20'] # Các phiên bản Node.js được hỗ trợ
+        node-version: ['18', '20'] # Các phiên bản Node.js được hỗ trợ (18+ cho Jest compatibility)
 
     # Job sẽ chạy lặp lại cho mỗi giá trị trong matrix
     runs-on: ubuntu-latest
