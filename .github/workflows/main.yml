@@ -21,7 +21,7 @@ jobs:
 
     # Job sẽ chạy lặp lại cho mỗi giá trị trong matrix
     runs-on: ubuntu-latest
-    
+
     steps:
       # Tải mã nguồn [cite: 197, 198]
       - name: Checkout code
@@ -48,3 +48,36 @@ jobs:
       # Xây dựng ứng dụng [cite: 207, 208]
       - name: Build application
         run: npm run build
+
+  notify:
+    # 1. Định nghĩa điều kiện phụ thuộc (Phải chạy sau khi build-and-test kết thúc)
+    needs: build-and-test
+
+    # 2. Định nghĩa điều kiện chạy (Luôn chạy, ngay cả khi Job trước thất bại, để thông báo lỗi)
+    if: always()
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # Cấu hình SMTP Server
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+
+          # Cấu hình Tài khoản (Lấy từ Secrets)
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          # Cấu hình Thông báo
+          subject: 'CI/CD Status: ${{ github.repository }} - ${{ job.status }}'
+          to: recipient@example.com # Email nhận thông báo của bạn
+          from: GitHub Actions
+          html_body: |
+            <h1>CI/CD Pipeline Status</h1>
+            <p><strong>Repository:</strong> ${{ github.repository }}</p>
+            <p><strong>Commit:</strong> ${{ github.sha }}</p>
+            <p><strong>Status:</strong> <strong>${{ job.status }}</strong></p>
+            <p>Check the build details here: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
