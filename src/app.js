@@ -1,5 +1,5 @@
 // src/app.js
-[cite_start]// Hàm đơn giản để kiểm tra tính năng "Add basic UI functionality" [cite: 139]
+// Hàm đơn giản để kiểm tra tính năng "Add basic UI functionality"
 function capitalize(str) {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

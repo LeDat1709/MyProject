@@ -30,9 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Chạy kiểm thử [cite: 205, 206]
+      # Chạy kiểm thử
       - name: Run tests
-        run: npm test
+        run: npx jest
 
       # Xây dựng ứng dụng [cite: 207, 208]
       - name: Build application
