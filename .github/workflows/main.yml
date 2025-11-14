@@ -13,7 +13,7 @@ on:
 # Định nghĩa các công việc (Jobs)
 jobs:
   build-and-test:
-    [cite_start]runs-on: ubuntu-latest # Chạy trên Ubuntu mới nhất [cite: 195]
+    runs-on: ubuntu-latest # Chạy trên Ubuntu mới nhất
     
     steps:
       # Tải mã nguồn [cite: 197, 198]
